@@ -10,8 +10,15 @@ def host_file(cached_path,
     curl https://rclone.org/install.sh | sudo bash
     rclone config
     """
-    if "gdrive:" not in subprocess.check_output("rclone listremotes", shell=True).decode('utf-8').strip():
-        raise RuntimeError("Install rclone and create ")
+    try:
+        if "gdrive:" not in subprocess.check_output("rclone listremotes", shell=True).decode('utf-8').strip():
+            raise RuntimeError("Configurate rclone:"
+                               "rclone config")
+    except:
+        raise RuntimeError("""Install rclone: 
+                        curl https://rclone.org/install.sh | sudo bash
+                        rclone config
+                    """)
 
     filename = os.path.basename(cached_path)
     os.system(f"rclone copy -P {cached_path} gdrive:{folder_name}")
