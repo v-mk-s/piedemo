@@ -8,7 +8,7 @@ rclone config
 ```
 
 After that use Google Drive hosting and verify your account.
-If you use remote connection, verify your account via port forwarding. 
+If you use remote connection, verify your account via port forwarding.   
 ```ssh -L localhost:53682:localhost:53682 ...```
 
 You can simply host your file in Google Drive and use it everywhere you want:
