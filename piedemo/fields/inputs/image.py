@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from PIL import Image
+import cv2
 from .base import InputField
 
 
@@ -15,6 +16,4 @@ class InputImageField(InputField):
         }
 
     def parse(self, data):
-        filestr = data.read()
-        npimg = np.fromstring(filestr, np.uint8)
-        return Image.fromarray(npimg)
+        return Image.open(data)

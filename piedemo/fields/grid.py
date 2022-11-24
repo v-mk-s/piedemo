@@ -13,6 +13,10 @@ class VStack(Field):
     def children(self):
         return sum([f.children() for f in self.fields], [])
 
+    def clear(self):
+        for f in self.fields:
+            f.clear()
+
 
 class HStack(Field):
     def __init__(self, fields):
@@ -24,3 +28,7 @@ class HStack(Field):
 
     def children(self):
         return sum([f.children() for f in self.fields], [])
+
+    def clear(self):
+        for f in self.fields:
+            f.clear()

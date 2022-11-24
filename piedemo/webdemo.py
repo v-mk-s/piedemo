@@ -1,6 +1,7 @@
 import os
 from flask import Flask, send_from_directory, render_template, render_template_string, request, redirect, url_for, jsonify
 import pickle
+import copy
 from .cache import Cache
 
 
@@ -44,9 +45,14 @@ class WebDemo(object):
 
         @app.route('/api/outputs/<int:output_id>', methods=['POST'])
         def send_outputs(output_id: int):
+            outputs = copy.deepcopy(self.outputs)
+            output_fields = {f.name: f for f in outputs.children()}
             output_data = self.cache.get(output_id)['outputs']
-            print(output_data)
-            return jsonify(output_data)
+            for key in output_data.keys():
+                output_fields[key].set_output(output_data[key])
+            response = jsonify(outputs.generate())
+            outputs.clear()
+            return response
 
         @app.route('/api/process', methods=['POST'])
         def process():

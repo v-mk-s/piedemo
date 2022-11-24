@@ -10,3 +10,6 @@ class Field(object):
 
     def children(self):
         return [self]
+
+    def clear(self):
+        pass
