@@ -22,7 +22,6 @@ setup(
     exclude_package_data={'': ['tests']},
     platforms=[platform.platform()],
     classifiers=[
-        "Development Status :: 5 - Alpha",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules",
