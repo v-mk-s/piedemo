@@ -15,4 +15,4 @@ cp ./README.md ./package_data/
 
 cd package_data && python setup.py build_ext --inplace && python setup.py bdist_wheel
 cp ./dist/*.whl ../
-rm -rf package_data
+rm -rf ../package_data
