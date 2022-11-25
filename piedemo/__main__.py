@@ -10,6 +10,12 @@ def parse_args():
                                        dest='command')
     host_parser = subparsers.add_parser('host')
     host_parser.add_argument('path', type=str)
+
+    web_parser = subparsers.add_parser('web')
+    web_parser.add_argument('function', type=str)
+    web_parser.add_argument('--port', type=int)
+    web_parser.add_argument('--host', type=str)
+
     args = parser.parse_args()
     return args
 
@@ -26,6 +32,9 @@ def execute(command, path):
         print("Code:")
         print(f"PretrainedCheckpoint(gdrive='{gdrive}',\n"
               f"                     filename='{filename}')")
+
+    elif command == 'web':
+        pass
 
 
 if __name__ == "__main__":

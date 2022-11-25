@@ -1,5 +1,9 @@
 import os
+from pathlib import Path
+import shutil
+from .checkpoint import url_download_file
 from flask import Flask, send_from_directory, render_template, render_template_string, request, redirect, url_for, jsonify
+import zipfile
 import pickle
 import copy
 from .cache import Cache
@@ -22,14 +26,27 @@ class WebDemo(object):
 
         self.input_fields = {f.name: f for f in self.inputs.children()}
 
-        self.cache = Cache(cache_path)
+        self.cache = Cache(Path(cache_path))
+        self.static_path = os.path.join(os.path.dirname(__file__), 'build')
+        self.download_static_files()
+
+    def download_static_files(self):
+        if not os.path.exists(self.static_path):
+            cached_path = os.path.join(os.path.dirname(__file__))
+            zip_path = os.path.join(cached_path, 'static.zip')
+            url_download_file(url="https://github.com/PieDataLabs/piedemo_frontend/releases/download/V1.0.0/static.zip",
+                              cached_path=zip_path)
+            with zipfile.ZipFile(zip_path) as zf:
+                zf.extractall(cached_path)
+            os.remove(zip_path)
 
     def run(self,
             host='0.0.0.0',
             port='8008',
             debug=True,
             **options):
-        app = Flask(self.name, static_folder='/Users/georgijkasparanc/piedemo_frontend/build')
+        print(self.static_path)
+        app = Flask(self.name, static_folder=self.static_path)
 
         @app.route('/', defaults={'path': ''})
         @app.route('/<path:path>')
@@ -67,8 +84,7 @@ class WebDemo(object):
             output_data = self.demo_function(**data)
             output_id = self.cache.store(data, output_data)
 
-            return redirect(url_for("serve", path=f"outputs/{output_id}"),
-                            code=200)
+            return redirect(url_for("serve", path=f"outputs/{output_id}"))
 
         app.run(host=host, port=port, debug=debug, **options)
 
@@ -87,3 +103,6 @@ class WebDemo(object):
             return new_data
 
         raise NotImplementedError()
+
+    def __del__(self):
+        shutil.rmtree(self.static_path)
