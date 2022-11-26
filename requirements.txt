@@ -4,3 +4,4 @@ pydrive
 gdown
 googledrivedownloader
 wldhx.yadisk_direct
+pandas
