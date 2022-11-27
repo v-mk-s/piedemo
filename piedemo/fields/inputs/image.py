@@ -17,3 +17,6 @@ class InputImageField(InputField):
 
     def parse(self, data):
         return Image.open(data)
+
+    def __repr__(self):
+        return "InputImageField(%s)" % self.name

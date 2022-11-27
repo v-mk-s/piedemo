@@ -4,6 +4,7 @@ from torchvision.models import resnet50
 from torchvision.transforms import transforms as T
 import pandas as pd
 from piedemo.checkpoint import PretrainedCheckpoint
+from piedemo.fields.outputs.piegraph import PieGraph
 
 
 ckpt = PretrainedCheckpoint(
@@ -26,17 +27,19 @@ def classify(img: Image.Image):
     print(img)
     if img.size == (0, 0):
         return {
-            "output": pd.DataFrame({})
+            "output": pd.DataFrame({}),
+            "pie": PieGraph()
         }
     batch = preprocess(img).unsqueeze(0)
     prediction = model(batch).squeeze(0).softmax(0)
-    class_id = prediction.argmax().item()
-    score = prediction[class_id].item()
+    class_ids = prediction.argsort()[-5:].tolist()[::-1]
+    scores = [prediction[class_id].item() for class_id in class_ids]
+    names = [categories[class_id] for class_id in class_ids]
 
-    category_name = categories[class_id]
     return {
         "output": pd.DataFrame({
-            'categories': [category_name],
-            'scores': [score]
-        })
+            'categories': names,
+            'scores': scores
+        }),
+        "pie": PieGraph([{"label": n, "prob": s} for n, s in zip(names, scores)])
     }

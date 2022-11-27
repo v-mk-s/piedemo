@@ -7,14 +7,18 @@ import pandas as pd
 from typing import Optional
 
 
+class PieGraph(list):
+    def __init__(self, data=[]):
+        super(PieGraph, self).__init__(data)
+
+
 class OutputPieGraphField(OutputField):
     def __init__(self, name):
         super(OutputPieGraphField, self).__init__(name=name)
         self.data = None
 
-    def set_output(self, data):
+    def set_output(self, data: PieGraph):
         self.data = data
-        assert np.allclose(sum([x['prob'] for x in self.data]), 1)
 
     def generate(self):
         return {
@@ -27,3 +31,6 @@ class OutputPieGraphField(OutputField):
 
     def clear(self):
         self.data = None
+
+    def __repr__(self):
+        return "OutputPieGraphField(%s)" % self.name

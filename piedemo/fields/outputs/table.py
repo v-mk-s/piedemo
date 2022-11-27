@@ -12,16 +12,21 @@ class OutputTableField(OutputField):
 
     def set_output(self, data: pd.DataFrame):
         self.table = data
+        print(self.table)
 
     def generate(self):
+        columns = self.table.columns.tolist()
         return {
             "card": "TableCard",
             "data": {
                 "name": self.name,
-                "headers": self.table.columns.tolist(),
-                "rows": [self.table.loc[i].tolist() for i in range(len(self.table))]
+                "headers": columns,
+                "rows": [[self.table[c][i] for c in columns] for i in range(len(self.table))]
             }
         }
 
     def clear(self):
         self.table = None
+
+    def __repr__(self):
+        return "OutputTableField(%s)" % self.name

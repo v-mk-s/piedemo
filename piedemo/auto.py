@@ -1,6 +1,7 @@
 import os
 import inspect
 from PIL import Image
+import numpy as np
 import pandas as pd
 import json
 import importlib
@@ -12,6 +13,7 @@ from .fields.outputs.image import OutputImageField
 from .fields.grid import VStack
 from .fields.outputs.table import OutputTableField
 from .fields.outputs.json import OutputJSONField
+from .fields.outputs.piegraph import PieGraph, OutputPieGraphField
 from typing_extensions import Annotated
 
 
@@ -47,7 +49,8 @@ def output_types2fields(t, **kwargs):
         int: OutputJSONField,
         float: OutputJSONField,
         type(None): OutputJSONField,
-        str: OutputJSONField
+        str: OutputJSONField,
+        PieGraph: OutputPieGraphField
     }[t](**kwargs)
 
 
@@ -63,6 +66,10 @@ def function2fields(fn):
 
     input_field = VStack([input_types2fields(t, name=k) for k, t in input_types.items()])
     output_field = VStack([output_types2fields(t, name=k) for k, t in output_types.items()])
+    print("Inputs:")
+    print(input_field)
+    print("Outputs: ")
+    print(output_field)
     return input_field, output_field
 
 

@@ -17,6 +17,9 @@ class VStack(Field):
         for f in self.fields:
             f.clear()
 
+    def __repr__(self):
+        return "VStack([%s])" % ',\n'.join([repr(f) for f in self.fields])
+
 
 class HStack(Field):
     def __init__(self, fields):
@@ -32,3 +35,6 @@ class HStack(Field):
     def clear(self):
         for f in self.fields:
             f.clear()
+
+    def __repr__(self):
+        return "HStack([%s])" % ',\n'.join([repr(f) for f in self.fields])
