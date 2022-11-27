@@ -8,6 +8,3 @@ class OutputImageWithObjectDetectionField(OutputImageField):
 
     def set_output(self, data):
         pass
-
-    def generate(self):
-        pass
