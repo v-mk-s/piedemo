@@ -6,6 +6,7 @@ import json
 import importlib
 from .fields.inputs.image import InputImageField
 from .fields.inputs.ranged_int import InputRangedIntField
+from .fields.inputs.text import InputTextField
 from .fields.outputs.base import OutputField
 from .fields.outputs.image import OutputImageField
 from .fields.grid import VStack
@@ -32,7 +33,8 @@ def input_types2fields(t, **kwargs):
         t = t.__args__[0]
     return {
         Image.Image: InputImageField,
-        int: InputRangedIntField
+        int: InputRangedIntField,
+        str: InputTextField
     }[t](**kwargs)
 
 
@@ -45,6 +47,7 @@ def output_types2fields(t, **kwargs):
         int: OutputJSONField,
         float: OutputJSONField,
         type(None): OutputJSONField,
+        str: OutputJSONField
     }[t](**kwargs)
 
 

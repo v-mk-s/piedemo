@@ -40,6 +40,12 @@ def demo_function4(my_input: Annotated[int, IntRange(0, 100, 4, "sm")]):
     }
 
 
+def demo_function5(x: str):
+    return {
+        "json": x
+    }
+
+
 if __name__ == '__main__':
     web = WebDemo("PieDataWebDemo",
                   demo_function=demo_function,
