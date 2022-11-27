@@ -1,9 +1,12 @@
 from PIL import Image
 import pandas as pd
+from typing_extensions import Annotated
+
 from piedemo.fields.outputs.image import OutputImageField
 from piedemo.webdemo import WebDemo
 from piedemo.fields.inputs.image import InputImageField
 from piedemo.fields.grid import VStack, HStack
+from piedemo.auto import IntRange
 
 
 def demo_function(my_input: Image.Image,
@@ -28,7 +31,7 @@ def demo_function3(my_input: Image.Image):
     }
 
 
-def demo_function4(my_input: int):
+def demo_function4(my_input: Annotated[int, IntRange(0, 100, 4, "sm")]):
     return {
         "json1": [my_input, 2],
         "json2": {'a': 1},
