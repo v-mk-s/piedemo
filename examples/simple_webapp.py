@@ -28,6 +28,15 @@ def demo_function3(my_input: Image.Image):
     }
 
 
+def demo_function4(my_input: int):
+    return {
+        "json1": [my_input, 2],
+        "json2": {'a': 1},
+        "json3": {'a': [{'b': 1}]},
+        "json4": my_input ** 2,
+    }
+
+
 if __name__ == '__main__':
     web = WebDemo("PieDataWebDemo",
                   demo_function=demo_function,

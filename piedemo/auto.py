@@ -4,6 +4,7 @@ from PIL import Image
 import pandas as pd
 import importlib
 from .fields.inputs.image import InputImageField
+from .fields.inputs.ranged_int import InputRangedIntField
 from .fields.outputs.base import OutputField
 from .fields.outputs.image import OutputImageField
 from .fields.grid import VStack
@@ -12,7 +13,8 @@ from .fields.outputs.json import OutputJSONField
 
 
 input_types2fields = {
-    Image.Image: InputImageField
+    Image.Image: InputImageField,
+    int: InputRangedIntField
 }
 
 
