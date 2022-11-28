@@ -78,7 +78,10 @@ class WebDemo(object):
             data.update(request.args.to_dict())
             data = self.aggregate(data)
 
-            for key in data.keys():
+            for key in list(data.keys()):
+                if key not in self.input_fields:
+                    del data[key]
+                    continue
                 data[key] = self.input_fields[key].parse(data[key])
 
             output_data = self.demo_function(**data)

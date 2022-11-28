@@ -8,6 +8,8 @@ import importlib
 from .fields.inputs.image import InputImageField
 from .fields.inputs.ranged_int import InputRangedIntField
 from .fields.inputs.text import InputTextField
+from .fields.inputs.int_list import InputIntListField
+from .fields.inputs.ranged_float import InputRangedFloatField
 from .fields.outputs.base import OutputField
 from .fields.outputs.image import OutputImageField
 from .fields.grid import VStack
@@ -15,6 +17,7 @@ from .fields.outputs.table import OutputTableField
 from .fields.outputs.json import OutputJSONField
 from .fields.outputs.piegraph import PieGraph, OutputPieGraphField
 from typing_extensions import Annotated
+from typing import List
 
 
 def IntRange(minValue,
@@ -36,7 +39,9 @@ def input_types2fields(t, **kwargs):
     return {
         Image.Image: InputImageField,
         int: InputRangedIntField,
-        str: InputTextField
+        List[int]: InputIntListField,
+        str: InputTextField,
+        float: InputRangedFloatField,
     }[t](**kwargs)
 
 
@@ -54,13 +59,20 @@ def output_types2fields(t, **kwargs):
     }[t](**kwargs)
 
 
+def get_dummy_input(t):
+    if t == List[int]:
+        return [1]
+    else:
+        return t()
+
+
 def autotyping(dummy_input):
     return {key: type(value) for key, value in dummy_input.items()}
 
 
 def function2fields(fn):
     input_types = inspect.getfullargspec(fn).annotations
-    dummy_input = {k: v() for k, v in input_types.items()}
+    dummy_input = {k: get_dummy_input(v) for k, v in input_types.items()}
     dummy_output = fn(**dummy_input)
     output_types = autotyping(dummy_output)
 
