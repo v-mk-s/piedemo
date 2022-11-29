@@ -10,6 +10,7 @@ from .fields.inputs.ranged_int import InputRangedIntField
 from .fields.inputs.text import InputTextField
 from .fields.inputs.int_list import InputIntListField
 from .fields.inputs.ranged_float import InputRangedFloatField
+from .fields.inputs.tuple import InputTupleField
 from .fields.outputs.base import OutputField
 from .fields.outputs.image import OutputImageField
 from .fields.grid import VStack
@@ -17,7 +18,7 @@ from .fields.outputs.table import OutputTableField
 from .fields.outputs.json import OutputJSONField
 from .fields.outputs.piegraph import PieGraph, OutputPieGraphField
 from typing_extensions import Annotated
-from typing import List
+from typing import List, Union, Tuple, Optional
 
 
 def IntRange(minValue,
@@ -36,12 +37,26 @@ def input_types2fields(t, **kwargs):
     if isinstance(t, Annotated.__class__):
         kwargs.update(json.loads(t.__metadata__[0]))
         t = t.__args__[0]
+
+    if isinstance(t, Tuple.__class__):
+        n = len(t.__args__)
+        if set(t.__args__).union({int, str, float}) != {int, str, float}:
+            raise NotImplementedError("Support only int, str, float")
+        kwargs.update({'types': t.__args__})
+        t = Tuple
+
+    if isinstance(t, Union.__class__) and t.__args__[1] is type(None):
+        kwargs.update({'optional': True})
+        t = t.__args__[0]
+        return input_types2fields(t, **kwargs)
+
     return {
         Image.Image: InputImageField,
         int: InputRangedIntField,
         List[int]: InputIntListField,
         str: InputTextField,
         float: InputRangedFloatField,
+        Tuple: InputTupleField
     }[t](**kwargs)
 
 
@@ -62,8 +77,18 @@ def output_types2fields(t, **kwargs):
 def get_dummy_input(t):
     if t == List[int]:
         return [1]
-    else:
-        return t()
+
+    if isinstance(t, Tuple.__class__):
+        n = len(t.__args__)
+        if set(t.__args__).union({int, str, float}) != {int, str, float}:
+            raise NotImplementedError("Support only int, str, float")
+        return tuple([t.__args__[i]() for i in range(n)])
+
+    if isinstance(t, Union.__class__) and t.__args__[1] is type(None):
+        t = t.__args__[0]
+        return get_dummy_input(t)
+
+    return t()
 
 
 def autotyping(dummy_input):

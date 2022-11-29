@@ -10,6 +10,36 @@ def is_int(x):
         return -1
 
 
+class IntStorage(int):
+    pass
+
+
+class StrStorage(str):
+    pass
+
+
+class FloatStorage(float):
+    pass
+
+
+class FrozenSetStorage(frozenset):
+    pass
+
+
+class DictStorage(dict):
+    pass
+
+
+def make_storage(v):
+    return {
+        int: IntStorage,
+        float: FloatStorage,
+        str: StrStorage,
+        frozenset: FrozenSetStorage,
+        dict: DictStorage,
+    }[v.__class__](v)
+
+
 class Cache(object):
     def __init__(self, path: Path):
         path = Path(path)

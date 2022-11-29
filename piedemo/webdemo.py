@@ -6,7 +6,7 @@ from flask import Flask, send_from_directory, render_template, render_template_s
 import zipfile
 import pickle
 import copy
-from .cache import Cache
+from .cache import Cache, make_storage
 
 
 class WebDemo(object):
@@ -15,7 +15,7 @@ class WebDemo(object):
                  demo_function=lambda x: x,
                  inputs=None,
                  outputs=None,
-                 aggregation_rule=None,
+                 aggregation_rule='by_underscore',
                  cache_path='./.cache'):
         self.name = name
         self.inputs = inputs
@@ -34,7 +34,7 @@ class WebDemo(object):
         if not os.path.exists(self.static_path):
             cached_path = os.path.join(os.path.dirname(__file__))
             zip_path = os.path.join(cached_path, 'static.zip')
-            url_download_file(url="https://github.com/PieDataLabs/piedemo_frontend/releases/download/V0.0.3/static.zip",
+            url_download_file(url="https://github.com/PieDataLabs/piedemo_frontend/releases/download/V0.0.4/static.zip",
                               cached_path=zip_path)
             with zipfile.ZipFile(zip_path) as zf:
                 zf.extractall(cached_path)
@@ -76,7 +76,9 @@ class WebDemo(object):
             data = request.files.to_dict()
             data.update(request.form.to_dict())
             data.update(request.args.to_dict())
+            print(data)
             data = self.aggregate(data)
+            print(data)
 
             for key in list(data.keys()):
                 if key not in self.input_fields:
@@ -98,11 +100,14 @@ class WebDemo(object):
         if self.aggregation_rule == 'by_underscore':
             new_data = {}
             for key in data.keys():
-                d = new_data
+                if '_' not in key:
+                    new_data[key] = make_storage(data[key])
+
+            for key in data.keys():
+                if '_' not in key:
+                    continue
                 ks = key.split('_')
-                for k in ks[:-1]:
-                    d = d.setdefault(k, {})
-                d[ks[-1]] = data[key]
+                setattr(new_data[ks[0]], '_'.join(ks[1:]), data[key])
             return new_data
 
         raise NotImplementedError()

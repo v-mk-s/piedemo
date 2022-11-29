@@ -1,7 +1,7 @@
 from PIL import Image
 import pandas as pd
 from typing_extensions import Annotated
-from typing import List
+from typing import List, Tuple, Optional
 
 from piedemo.fields.outputs.image import OutputImageField
 from piedemo.webdemo import WebDemo
@@ -11,7 +11,7 @@ from piedemo.auto import IntRange
 
 
 def demo_function(my_input: Image.Image,
-                  my_input2: Image.Image):
+                  my_input2: Optional[Image.Image]):
     return {
         "image": my_input
     }
@@ -32,7 +32,7 @@ def demo_function3(my_input: Image.Image):
     }
 
 
-def demo_function4(my_input: Annotated[int, IntRange(0, 100, 4, "sm")]):
+def demo_function4(my_input: Optional[Annotated[int, IntRange(0, 100, 4, "sm")]]):
     return {
         "json1": [my_input, 2],
         "json2": {'a': 1},
@@ -41,15 +41,21 @@ def demo_function4(my_input: Annotated[int, IntRange(0, 100, 4, "sm")]):
     }
 
 
-def demo_function5(x: str):
+def demo_function5(x: Optional[str]):
     return {
         "json": x
     }
 
 
-def demo_function6(x: List[int], y: float):
+def demo_function6(x: Optional[List[int]], y: float):
     return {
         "json": x
+    }
+
+
+def demo_function7(x: Tuple[str, int, str], y: Optional[float]):
+    return {
+        "json": [list(x), y]
     }
 
 
