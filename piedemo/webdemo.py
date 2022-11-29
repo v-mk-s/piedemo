@@ -34,7 +34,7 @@ class WebDemo(object):
         if not os.path.exists(self.static_path):
             cached_path = os.path.join(os.path.dirname(__file__))
             zip_path = os.path.join(cached_path, 'static.zip')
-            url_download_file(url="https://github.com/PieDataLabs/piedemo_frontend/releases/download/V0.0.2/static.zip",
+            url_download_file(url="https://github.com/PieDataLabs/piedemo_frontend/releases/download/V0.0.3/static.zip",
                               cached_path=zip_path)
             with zipfile.ZipFile(zip_path) as zf:
                 zf.extractall(cached_path)

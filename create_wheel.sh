@@ -3,6 +3,7 @@
 rm -rf package_data
 mkdir package_data
 cp -r ./piedemo ./package_data/
+cp -r ./scripts ./package_data
 if [[ $1 -eq "--cython" ]]
     then
         cp ./setup_with_cython.py ./package_data/setup.py
