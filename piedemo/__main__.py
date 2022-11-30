@@ -1,7 +1,7 @@
 import os
 import argparse
 from .checkpoint import rclone_host_file
-from .auto import function2fields, import_function
+from .auto import introspect, import_function
 from .webdemo import WebDemo
 
 
@@ -39,11 +39,9 @@ def execute(command, path,
 
     elif command == 'web':
         fn, name = import_function(path)
-        input_fields, output_fields = function2fields(fn)
-        web = WebDemo(name=name,
-                      demo_function=fn,
-                      inputs=input_fields,
-                      outputs=output_fields)
+        kwargs = introspect(fn)
+        kwargs.update({"name": name})
+        web = WebDemo(**kwargs)
         web.run(host=host, port=port)
 
 

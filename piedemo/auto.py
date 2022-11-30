@@ -4,13 +4,18 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 import json
+from enum import Enum, EnumMeta
 import importlib
+from .parsers.click import is_click_decorated, parse as parse_click
+from .parsers.typing import parse as parse_typing
 from .fields.inputs.image import InputImageField
 from .fields.inputs.ranged_int import InputRangedIntField
 from .fields.inputs.text import InputTextField
 from .fields.inputs.int_list import InputIntListField
 from .fields.inputs.ranged_float import InputRangedFloatField
 from .fields.inputs.tuple import InputTupleField
+from .fields.inputs.choice import InputChoiceField
+from .fields.inputs.bool import InputBoolField
 from .fields.outputs.base import OutputField
 from .fields.outputs.image import OutputImageField
 from .fields.grid import VStack
@@ -45,6 +50,19 @@ def input_types2fields(t, **kwargs):
         kwargs.update({'types': t.__args__})
         t = Tuple
 
+    if isinstance(t, EnumMeta):
+        choices = [c.name for c in list(t._member_map_.values())]
+        kwargs.update({'choices': choices})
+        kwargs.update({'enum_type': t})
+        if hasattr(t, '__piedemo_use_values') and t.__piedemo_use_values:
+            kwargs.update({"use_values": True})
+
+        t = Enum
+
+    if t == bool:
+        flags = [kwargs.get('name')]
+        kwargs.update({"flags": flags})
+
     if isinstance(t, Union.__class__) and t.__args__[1] is type(None):
         kwargs.update({'optional': True})
         t = t.__args__[0]
@@ -56,7 +74,9 @@ def input_types2fields(t, **kwargs):
         List[int]: InputIntListField,
         str: InputTextField,
         float: InputRangedFloatField,
-        Tuple: InputTupleField
+        Tuple: InputTupleField,
+        Enum: InputChoiceField,
+        bool: InputBoolField,
     }[t](**kwargs)
 
 
@@ -70,6 +90,7 @@ def output_types2fields(t, **kwargs):
         float: OutputJSONField,
         type(None): OutputJSONField,
         str: OutputJSONField,
+        bool: OutputJSONField,
         PieGraph: OutputPieGraphField
     }[t](**kwargs)
 
@@ -84,6 +105,9 @@ def get_dummy_input(t):
             raise NotImplementedError("Support only int, str, float")
         return tuple([t.__args__[i]() for i in range(n)])
 
+    if isinstance(t, EnumMeta):
+        return list(t._member_map_.values())[0]
+
     if isinstance(t, Union.__class__) and t.__args__[1] is type(None):
         t = t.__args__[0]
         return get_dummy_input(t)
@@ -95,8 +119,11 @@ def autotyping(dummy_input):
     return {key: type(value) for key, value in dummy_input.items()}
 
 
-def function2fields(fn):
-    input_types = inspect.getfullargspec(fn).annotations
+def introspect(fn):
+    if is_click_decorated(fn):
+        input_types, fn = parse_click(fn)
+    else:
+        input_types, fn = parse_typing(fn)
     dummy_input = {k: get_dummy_input(v) for k, v in input_types.items()}
     dummy_output = fn(**dummy_input)
     output_types = autotyping(dummy_output)
@@ -107,7 +134,11 @@ def function2fields(fn):
     print(input_field)
     print("Outputs: ")
     print(output_field)
-    return input_field, output_field
+    return {
+        "inputs": input_field,
+        "outputs": output_field,
+        "demo_function": fn
+    }
 
 
 def import_function(path):

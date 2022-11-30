@@ -10,6 +10,8 @@ from .cache import Cache, make_storage
 
 
 class WebDemo(object):
+    PIEBREAK = '__piedemo__'
+
     def __init__(self,
                  name="PieDataWebDemo",
                  demo_function=lambda x: x,
@@ -86,7 +88,10 @@ class WebDemo(object):
                     continue
                 data[key] = self.input_fields[key].parse(data[key])
 
+            print(data)
+
             output_data = self.demo_function(**data)
+            print(output_data)
             output_id = self.cache.store(data, output_data)
 
             return redirect(url_for("serve", path=f"outputs/{output_id}"))
@@ -100,14 +105,14 @@ class WebDemo(object):
         if self.aggregation_rule == 'by_underscore':
             new_data = {}
             for key in data.keys():
-                if '_' not in key:
+                if self.PIEBREAK not in key:
                     new_data[key] = make_storage(data[key])
 
             for key in data.keys():
-                if '_' not in key:
+                if self.PIEBREAK not in key:
                     continue
-                ks = key.split('_')
-                setattr(new_data[ks[0]], '_'.join(ks[1:]), data[key])
+                ks = key.split(self.PIEBREAK)
+                setattr(new_data[ks[0]], self.PIEBREAK.join(ks[1:]), data[key])
             return new_data
 
         raise NotImplementedError()

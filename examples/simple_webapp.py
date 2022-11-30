@@ -2,12 +2,19 @@ from PIL import Image
 import pandas as pd
 from typing_extensions import Annotated
 from typing import List, Tuple, Optional
+from enum import Enum
 
 from piedemo.fields.outputs.image import OutputImageField
 from piedemo.webdemo import WebDemo
 from piedemo.fields.inputs.image import InputImageField
 from piedemo.fields.grid import VStack, HStack
 from piedemo.auto import IntRange
+
+
+class TestEnum(Enum):
+    Enum1 = "Enum1"
+    Enum2 = "Enum2"
+    Enum3 = "eflk2beqlfnlkwnfqlkfwwq"
 
 
 def demo_function(my_input: Image.Image,
@@ -56,6 +63,18 @@ def demo_function6(x: Optional[List[int]], y: float):
 def demo_function7(x: Tuple[str, int, str], y: Optional[float]):
     return {
         "json": [list(x), y]
+    }
+
+
+def demo_function8(x: Optional[TestEnum]):
+    return {
+        "json": str(x)
+    }
+
+
+def demo_function9(x: bool):
+    return {
+        "json": int(x)
     }
 
 
