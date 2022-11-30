@@ -8,6 +8,7 @@ from enum import Enum, EnumMeta
 import importlib
 from .parsers.click import is_click_decorated, parse as parse_click
 from .parsers.typing import parse as parse_typing
+from .parsers.func_scope import func2locals
 from .fields.inputs.image import InputImageField
 from .fields.inputs.ranged_int import InputRangedIntField
 from .fields.inputs.text import InputTextField
@@ -126,6 +127,10 @@ def introspect(fn):
         input_types, fn = parse_typing(fn)
     dummy_input = {k: get_dummy_input(v) for k, v in input_types.items()}
     dummy_output = fn(**dummy_input)
+    if dummy_output is None:
+        fn = func2locals(fn)
+        dummy_output = fn(**dummy_input)
+
     output_types = autotyping(dummy_output)
 
     input_field = VStack([input_types2fields(t, name=k) for k, t in input_types.items()])
