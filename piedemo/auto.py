@@ -109,6 +109,9 @@ def get_dummy_input(t):
     if isinstance(t, EnumMeta):
         return list(t._member_map_.values())[0]
 
+    if t == Image.Image:
+        return Image.new('RGB', size=(10, 10))
+
     if isinstance(t, Union.__class__) and t.__args__[1] is type(None):
         t = t.__args__[0]
         return get_dummy_input(t)

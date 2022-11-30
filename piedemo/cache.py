@@ -31,13 +31,16 @@ class DictStorage(dict):
 
 
 def make_storage(v):
-    return {
+    mapping = {
         int: IntStorage,
         float: FloatStorage,
         str: StrStorage,
         frozenset: FrozenSetStorage,
         dict: DictStorage,
-    }[v.__class__](v)
+    }
+    if v.__class__ in mapping:
+        return mapping[v.__class__](v)
+    return v
 
 
 class Cache(object):
