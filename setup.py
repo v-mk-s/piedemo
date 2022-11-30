@@ -8,7 +8,7 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name='piedemo',
-    version='1.0.4',
+    version='1.0.5',
     python_requires=f'>=3.6,<3.9',
     description='PyTorch based Web Demo app',
     url='https://github.com/PieDataLabs/piedemo',
