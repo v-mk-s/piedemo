@@ -6,11 +6,9 @@ git clone https://github.com/NVlabs/stylegan3
 cd stylegan3  
 piedemo web gen_images:generate_images  
 ```
-
-<img width="1139" alt="image" src="https://user-images.githubusercontent.com/26091470/204933937-554f9d11-f1c6-493e-af38-48a3c9d7f5c6.png">
-<img width="1144" alt="image" src="https://user-images.githubusercontent.com/26091470/204934093-244ff3d0-c672-41bd-ae10-eebfa42d7657.png">
-<img width="914" alt="image" src="https://user-images.githubusercontent.com/26091470/204934587-6607d5fe-965b-41b2-922c-c021d5d23ff2.png">
-
+![telegram-cloud-photo-size-2-5206465743007367175-y](https://user-images.githubusercontent.com/26091470/204938625-e1b28649-a542-4701-b8f6-83c78c68d266.jpg)
+![telegram-cloud-photo-size-2-5206465743007367176-y](https://user-images.githubusercontent.com/26091470/204938644-7414a440-a0c8-4ac7-aa2d-ac293226fc9a.jpg)
+![telegram-cloud-photo-size-2-5206465743007367178-y](https://user-images.githubusercontent.com/26091470/204938660-eb61ae39-6690-45d7-9fea-fdc9b013d5a1.jpg)
 
 
 
