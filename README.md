@@ -2,6 +2,19 @@
 
 
 ```
+git clone https://github.com/NVlabs/stylegan3  
+cd stylegan3  
+piedemo web gen_images:generate_images  
+```
+
+<img width="1139" alt="image" src="https://user-images.githubusercontent.com/26091470/204933937-554f9d11-f1c6-493e-af38-48a3c9d7f5c6.png">
+<img width="1144" alt="image" src="https://user-images.githubusercontent.com/26091470/204934093-244ff3d0-c672-41bd-ae10-eebfa42d7657.png">
+<img width="914" alt="image" src="https://user-images.githubusercontent.com/26091470/204934587-6607d5fe-965b-41b2-922c-c021d5d23ff2.png">
+
+
+
+
+```
 from PIL import Image
 import torch
 from torchvision.models import resnet50
